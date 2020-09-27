@@ -13,13 +13,14 @@ Compilation
 ----------------- 
 To make RLDOCK, type:
 ```Bash
-	cd RLDOCK#Bash  
-	bash install.sh#Bash
+cd RLDOCK  
+bash install.sh
 ```
-
 If make installed, just type:
-	cd RLDOCK
-	make
+```Bash
+cd RLDOCK  
+make
+```
 
 Command line options
 ----------------- 
