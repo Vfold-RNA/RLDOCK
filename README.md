@@ -24,11 +24,9 @@ make
 
 Command line options
 ----------------- 
-`
--i <receptor.mol2>  
-    The Mol2 file of RNA.  
--l <ligand.mol2>  
-    The Mol2 file of ligand conformers.  
+```Bash
+-i <receptor.mol2>  #The Mol2 file of RNA.  
+-l <ligand.mol2>    #The Mol2 file of ligand conformers.  
 -o <output prefix>  
     Path and filename for output files.  
 -n <thread number>  
