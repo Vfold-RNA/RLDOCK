@@ -12,8 +12,10 @@ System Requirement
 Compilation
 ----------------- 
 To make RLDOCK, type:
+```Bash
 	cd RLDOCK#Bash  
 	bash install.sh#Bash
+```
 
 If make installed, just type:
 	cd RLDOCK
