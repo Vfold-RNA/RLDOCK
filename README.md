@@ -1,7 +1,9 @@
 **RLDOCK**
 -----------------
-RLDOCK is a source-availabe program for predicting the binding site and binding pose for ligand-RNA binding. 
-Author: Li-Zhen Sun, Yangwei Jiang, & Shi-Jie Chen Email: chenshi@missouri.edu Date: Sept 27, 2020
+RLDOCK is a source-availabe program for predicting the binding site and binding pose for ligand-RNA binding.  
+Author: Li-Zhen Sun, Yangwei Jiang, & Shi-Jie Chen   
+Email: chenshi@missouri.edu   
+Date: Sept 27, 2020
 
 System Requirement
 ------------------
