@@ -24,6 +24,7 @@ make
 
 Command line options
 ----------------- 
+`
 -i <receptor.mol2>  
     The Mol2 file of RNA.  
 -l <ligand.mol2>  
@@ -33,7 +34,8 @@ Command line options
 -n <thread number>  
     Number of threads used for simulation.  
 -r <reference ligand file>(optional)  
-    The Mol2 file of the ligand for RMSD calculation.  
+    The Mol2 file of the ligand for RMSD calculation.
+ `   
   example:
  ```Bash
   ./RLDOCK -i Example/1AJU_RNA.mol2 -l Example/1AJU_ligand.mol2 -o Example/1AJU -n 20 -r Example/1AJU_ref.mol2    
