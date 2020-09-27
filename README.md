@@ -1,4 +1,4 @@
-RLDOCK
+**RLDOCK**
 -----------------
 RLDOCK is a source-availabe program for predicting the binding site and binding pose for ligand-RNA binding. 
 Author: Li-Zhen Sun, Yangwei Jiang, & Shi-Jie Chen Email: chenshi@missouri.edu Date: Sept 27, 2020
@@ -6,18 +6,18 @@ Author: Li-Zhen Sun, Yangwei Jiang, & Shi-Jie Chen Email: chenshi@missouri.edu D
 System Requirement
 ------------------
 
- Linux/Unix
+ Linux/Unix  
  gcc compiler >4.8 version 
  
 Compilation
 ----------------- 
 To make RLDOCK, type:
- cd RLDOCK
- bash install.sh
+	cd RLDOCK
+	bash install.sh
 
 If make installed, just type:
- cd RLDOCK
- make
+	cd RLDOCK
+	make
 
 Command line options
 ----------------- 
