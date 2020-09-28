@@ -1,0 +1,1 @@
+g++ -std=c++11 -pthread -O3 -Isrc/ src/main.cpp src/RLDOCK_CASE.cpp src/RLDOCK_COORDINATE.cpp src/RLDOCK_FORCEFIELD.cpp src/RLDOCK_GRID.cpp src/RLDOCK_PARAMETER.cpp src/RLDOCK_POCKET.cpp src/RLDOCK_POSE.cpp -o RLDOCK
