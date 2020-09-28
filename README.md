@@ -27,12 +27,13 @@ make
 Command line options
 ----------------- 
 ```Bash
--i <receptor.mol2>  # The Mol2 file of RNA.  
--l <ligand.mol2>    # The Mol2 file of ligand conformers.  
--o <output prefix>  # Path and filename for output files.  
--n <thread number>  # Number of threads used for simulation.  
--r <reference ligand file>  # (optional)The Mol2 file of the ligand for RMSD calculation.  
+-i <receptor.mol2>  # an RNA file in the format of MOL2  
+-l <ligand.mol2>    # a ligand conformer file in the format of MOL2  
+-o <output prefix>  # path and filename for output files  
+-n <thread number>  # number of threads used for simulation  
+-r <reference ligand file>  # (optional)the Mol2 file of the ligand for RMSD calculation.  
  ```
+We recommend using [Chimera](http://www.cgl.ucsf.edu/chimera/) and [Open Babel](https://github.com/openbabel/openbabel/releases) to generate related files.
 Important Note: The order of atoms in `<reference ligand file>` should be the same as the order in `<ligand.mol2>`.
   
   example:
