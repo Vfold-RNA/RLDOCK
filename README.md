@@ -33,7 +33,7 @@ Command line options
 -n <thread number>  # Number of threads used for simulation.  
 -r <reference ligand file>  # (optional)The Mol2 file of the ligand for RMSD calculation.  
  ```
-Important Note: The sequence of atoms in `<reference ligand file>` should follow the sequence in `<ligand.mol2>`.
+Important Note: The order of atoms in `<reference ligand file>` should be the same as the order in `<ligand.mol2>`.
   
   example:
  ```Bash
