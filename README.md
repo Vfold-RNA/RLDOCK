@@ -33,7 +33,7 @@ Command line options
 -n <thread number>  # number of threads used for simulation  
 -r <reference ligand file>  # (optional)the Mol2 file of the ligand for RMSD calculation.  
  ```
-We recommend using [Chimera](http://www.cgl.ucsf.edu/chimera/) and [Open Babel](https://github.com/openbabel/openbabel/releases) to generate related files.
+We recommend using [Chimera](http://www.cgl.ucsf.edu/chimera/) and [Open Babel](https://github.com/openbabel/openbabel/releases) to generate related files.  
 Important Note: The order of atoms in `<reference ligand file>` should be the same as the order in `<ligand.mol2>`.
   
   example:
