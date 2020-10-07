@@ -1,7 +1,7 @@
 **RLDOCK**
 -----------------
 RLDOCK is a source-availabe program for predicting the binding site and binding pose for ligand-RNA binding.  
-Author: Li-Zhen Sun, Yangwei Jiang, & Shi-Jie Chen   
+Author: Li-Zhen Sun, Yangwei Jiang, Yuanzhe Zhou, & Shi-Jie Chen   
 Email: chenshi@missouri.edu   
 Date: Sept 27, 2020
 
@@ -58,6 +58,6 @@ The necessary files for the example cases are in the file `Example`.
 To run the example cases, type:
 ```Bash
  cd RLDOCK
- bash run_4FEL.sh # An example with 0 rotatable bond.  
+ bash run_3GCA.sh # An example with 0 rotatable bond.  
  bash run_3F2T.sh # An example with 7 rotatable bonds.
  ```
