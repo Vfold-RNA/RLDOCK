@@ -23,6 +23,10 @@ If `make` installed, just type:
 cd RLDOCK  
 make
 ```
+Executable file
+----------------- 
+The executable file `RLDOCK` will be updated only if necessary.
+
 
 Command line options
 ----------------- 
@@ -43,14 +47,15 @@ Important Note: The order of atoms in `<reference ligand file>` should be the sa
 
 Output files
 ----------------- 
-There will be 4 output files for each simulation:
+There will be 6 output files for each simulation:
 ```Bash
-XXX_pocket.dat  # Record the information of potential binding sites.  
+XXX_pocket.dat  # Record the geometric score for potential binding sites.  
+XXX_pocket.xyz  # Potential binding sites are recorded in the format of .xyz for visualization. 
 XXX_usepose.dat # Record the information of selected poses for scoring step.  
 XXX_SF_low.dat  # Record the scoring and ranking information by using the low resolution scoring function(SF-l).  
 XXX_SF_high.dat # Record the scoring and ranking information by using the high resolution scoring function(SF-h).
+XXX_cluster.mol2 # Top 10 poses after clustering.
 ```
-
 
 Example
 -----------------
