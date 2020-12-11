@@ -829,7 +829,7 @@ int main(int argc, char** argv )
                 }
             }
             out_pocket_file.setf(ios::fixed);
-            out_pocket_file<<"site"<<num<<right<<setw(12)<<setprecision(3)<<a.x<<setw(12)<<a.y<<setw(12)<<a.z<<setw(8)<<label_pocket_to_native<<setw(15)<<dmin<<setw(15)<<a.lj_site_min<<endl;
+            out_pocket_file<<"<site> "<<num<<right<<setw(12)<<setprecision(3)<<a.x<<setw(12)<<a.y<<setw(12)<<a.z<<setw(8)<<label_pocket_to_native<<setw(15)<<dmin<<setw(15)<<a.lj_site_min<<endl;
             for(int i = 0; i!= cmpl.conformers_num; i++)
             {
                out_pocket_file<<setw(4)<<left<<i;
@@ -842,6 +842,7 @@ int main(int argc, char** argv )
         }
         out_pocket_file.close();
         cout<<"_pocket.dat _usepose.dat Finish"<<endl;
+        if(P.TOP_step2_conformer>cmpl.conformers_num)P.TOP_step2_conformer=cmpl.conformers_num;
         for(int ipck=0;ipck!=pockets.size();ipck++)
         {
             
@@ -868,8 +869,6 @@ int main(int argc, char** argv )
                 }
             }
         }
-        
-
         if(pockets.size()>P.TOP_step2_site)pockets.resize(P.TOP_step2_site);
     }
     else
@@ -878,18 +877,18 @@ int main(int argc, char** argv )
         string sline;
         while(getline(pocket_file,sline))
         {
-            if(sline.find("site")!=string::npos)
+            if(sline.find("<site>")!=string::npos)
             {
                 POCKET pp;
                 std::istringstream ss(sline);
                 std::string buf;
                 std::vector<std::string> token;
                 while(ss >> buf) token.push_back(buf);
-                pp.index = stod(sline.substr(4,4));
-                pp.x = stod(token[1]);
-                pp.y = stod(token[2]);
-                pp.z = stod(token[3]);
-                pp.dis2rec = stod(token[5]);
+                pp.index = stod(token[1]);
+                pp.x = stod(token[2]);
+                pp.y = stod(token[3]);
+                pp.z = stod(token[4]);
+                pp.dis2rec = stod(token[6]);
                
 
                 vector< vector<int> >pose_tmp(cmpl.conformers_num,vector<int>(P.TOP_step2_pose,0.0));
@@ -1013,7 +1012,7 @@ int main(int argc, char** argv )
         string sline;
         while(getline(sfl_file,sline))
         {
-            if(sline.find("<PDBinfo>")!=string::npos)
+            if(sline.find("<JobName>")!=string::npos)
             {
                 std::istringstream ss(sline);
                 std::string buf;
@@ -1021,7 +1020,7 @@ int main(int argc, char** argv )
                 while(ss >> buf) token.push_back(buf);
 
                 num_ligand_atom = stoi(token[5]);
-                if(num_ligand_atom!=cmpl.lig_atom_num){cout<<"focus1 "<<num_ligand_atom<<" != lig.noH "<<cmpl.lig_atom_num<<endl;exit(3);}
+                if(num_ligand_atom!=cmpl.lig_atom_num){cout<<"ligand in _SF_low.dat "<<num_ligand_atom<<" != lig.noH "<<cmpl.lig_atom_num<<endl;exit(3);}
             }
             if(sline.find("<site>")!=std::string::npos)
             {
