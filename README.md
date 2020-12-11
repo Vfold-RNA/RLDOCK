@@ -35,14 +35,15 @@ Command line options
 -l <ligand.mol2>    # a ligand conformer file in the format of MOL2  
 -o <output prefix>  # path and filename for output files  
 -n <thread number>  # number of threads used for simulation  
--r <reference ligand file>  # (optional)the Mol2 file of the ligand for RMSD calculation.  
+-s <path of sphere.dat>  # sphere.dat records shafts used for rotating ligands and  is stored in `src`
+-r <reference ligand file>  # (optional)the Mol2 file of the ligand for RMSD calculation  
  ```
 We recommend using [Chimera](http://www.cgl.ucsf.edu/chimera/) and [Open Babel](https://github.com/openbabel/openbabel/releases) to generate related files.  
 Important Note: The order of atoms in `<reference ligand file>` should be the same as the order in `<ligand.mol2>`.
   
   example:
  ```Bash
-  ./RLDOCK -i job1_RNA.mol2 -l job1_ligand.mol2 -o job1 -n 20 -r job1_ref_lig.mol2    
+  ./RLDOCK -i job1_RNA.mol2 -l job1_ligand.mol2 -o job1 -n 20 -s src/sphere.dat -r job1_ref_lig.mol2    
 ```
 
 Output files
