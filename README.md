@@ -13,7 +13,7 @@ System Requirement
  
 Compilation
 ----------------- 
-To make `RLDOCK_Original`, type:
+To make `RLDOCK`, type:
 ```Bash
 cd RLDOCK  
 bash install.sh
