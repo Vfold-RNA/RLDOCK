@@ -23,7 +23,7 @@ If `make` installed, just type:
 cd RLDOCK  
 make
 ```
-Executable file
+Executable file (Recommended)
 ----------------- 
 The executable file `RLDOCK` will be updated only if necessary.
 
