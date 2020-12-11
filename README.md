@@ -37,7 +37,7 @@ Command line options
 -n <thread number>  # number of threads used for simulation  
 -s <path of sphere.dat>  # sphere.dat records shafts used for rotating ligands and  is stored in `src`
 -r <reference ligand file>  # (optional)the Mol2 file of the ligand for RMSD calculation
-                            # if the reference ligand file is not available, the first input conformer of ligand will set as the conformer for RMSD calculation  
+                            # if the file is not available, the first input conformer of ligand will be set as the conformer for RMSD calculation  
  ```
 We recommend using [Chimera](http://www.cgl.ucsf.edu/chimera/) and [Open Babel](https://github.com/openbabel/openbabel/releases) to generate related files.  
 Important Note: The order of atoms in `<reference ligand file>` should be the same as the order in `<ligand.mol2>`.
