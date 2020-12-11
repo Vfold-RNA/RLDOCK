@@ -624,6 +624,7 @@ int main(int argc, char** argv )
     string ligand_file = "";
     string reference_file = "";
     string output_prefix = "";
+    string sphere_file = "";
     int num_threads = 4;
 
 
@@ -631,7 +632,7 @@ int main(int argc, char** argv )
         switch(opt)
         {
             case 'h':
-                printf("Usage ./RLDOCK -i <receptor.mol2> -l <ligand.mol2> -o <output prefix> -n <thread number> -r <native_pose.mol2>");
+                printf("Usage ./RLDOCK -i <receptor.mol2> -l <ligand.mol2> -o <output prefix> -n <thread number> -s <path of sphere.dat>-r <native_pose.mol2>");
                 return 0;
             case 'i':
                 receptor_file = string(optarg);
@@ -644,6 +645,9 @@ int main(int argc, char** argv )
                 break;
             case 'n':
                 num_threads = atoi(optarg);
+                break;
+            case 's':
+                sphere_file = string(optarg);
                 break;
             case 'r':
                 reference_file = string(optarg);
@@ -666,7 +670,7 @@ int main(int argc, char** argv )
     std::cout<<"*********start*******"<<endl;
     
     PARAMETER P;
-    P.SetSphere("src/sphere.dat");
+    P.SetSphere(sphere_file.c_str());
     P.SetAngle();
     P.InputUpdate(receptor_file,ligand_file,reference_file,output_prefix,num_threads);
     
