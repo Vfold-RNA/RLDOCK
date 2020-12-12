@@ -628,7 +628,7 @@ int main(int argc, char** argv )
     int num_threads = 4;
 
 
-    while((opt = getopt(argc, argv, "hi:l:r:o:n:")) != -1) {
+    while((opt = getopt(argc, argv, "hi:l:r:o:s:n:")) != -1) {
         switch(opt)
         {
             case 'h':
