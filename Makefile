@@ -1,4 +1,4 @@
-TARGET     := RLDOCK_Original
+TARGET     := RLDOCK
 
 SHELL = /bin/bash
 $(SHELL mkdir -p obj)

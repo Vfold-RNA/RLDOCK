@@ -18,14 +18,14 @@ To make `RLDOCK`, type:
 cd RLDOCK  
 bash install.sh
 ```
-If `make` installed, just type:
+or, if `make` installed, just type:
 ```Bash
 cd RLDOCK  
 make
 ```
-Executable file (Recommended)
+Executable file
 ----------------- 
-The executable file `RLDOCK` will be updated only if necessary.
+The executable file is `RLDOCK` in the base folder.
 
 
 Command line options
@@ -34,6 +34,7 @@ Command line options
 -i <receptor.mol2>  # an RNA file in the format of MOL2  
 -l <ligand.mol2>    # a ligand conformer file in the format of MOL2  
 -o <output prefix>  # path and filename for output files  
+-c <number of output poses>  # number of output poses after clustering (if this number is larger than number of clusters, the number output poses will be same as the number of clusters)
 -n <thread number>  # number of threads used for simulation  
 -s <path of sphere.dat>  # sphere.dat records shafts used for rotating ligands and  is stored in `src`
 -r <reference ligand file>  # (optional)the Mol2 file of the ligand for RMSD calculation
@@ -44,7 +45,7 @@ Important Note: The order of atoms in `<reference ligand file>` should be the sa
   
   example:
  ```Bash
-  ./RLDOCK -i job1_RNA.mol2 -l job1_ligand.mol2 -o job1 -n 20 -s src/sphere.dat -r job1_ref_lig.mol2    
+  ./RLDOCK -i job1_RNA.mol2 -l job1_ligand.mol2 -o job1 -c 10 -n 20 -s src/sphere.dat -r job1_ref_lig.mol2    
 ```
 
 Output files
@@ -56,7 +57,7 @@ XXX_pocket.xyz  # Potential binding sites are recorded in the format of .xyz for
 XXX_usepose.dat # Record the information of selected poses for scoring step.  
 XXX_SF_low.dat  # Record the scoring and ranking information by using the low resolution scoring function(SF-l).  
 XXX_SF_high.dat # Record the scoring and ranking information by using the high resolution scoring function(SF-h).
-XXX_cluster.mol2 # Top 10 poses after clustering.
+XXX_cluster.mol2 # Top poses (default 10 poses) after clustering.
 ```
 
 Example

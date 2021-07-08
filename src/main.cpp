@@ -626,14 +626,15 @@ int main(int argc, char** argv )
     string reference_file = "";
     string output_prefix = "";
     string sphere_file = "";
+    int num_of_cluster = 10;
     int num_threads = 4;
 
 
-    while((opt = getopt(argc, argv, "hi:l:r:o:s:n:")) != -1) {
+    while((opt = getopt(argc, argv, "hi:l:r:o:s:n:c:")) != -1) {
         switch(opt)
         {
             case 'h':
-                printf("Usage ./RLDOCK -i <receptor.mol2> -l <ligand.mol2> -o <output prefix> -n <thread number> -s <path of sphere.dat> -r <native_pose.mol2>");
+                printf("Usage ./RLDOCK -i <receptor.mol2> -l <ligand.mol2> -o <output prefix> -c <num of output poses> -n <thread number> -s <path of sphere.dat> -r <native_pose.mol2>");
                 return 0;
             case 'i':
                 receptor_file = string(optarg);
@@ -643,6 +644,9 @@ int main(int argc, char** argv )
                 break;
             case 'o':
                 output_prefix = string(optarg);
+                break;
+            case 'c':
+                num_of_cluster = atoi(optarg);
                 break;
             case 'n':
                 num_threads = atoi(optarg);
@@ -1177,8 +1181,9 @@ int main(int argc, char** argv )
     out_clu_filename<<"# lig_size: "<<cmpl.lig_atom_num<<endl;
     out_clu_filename<<"# Time: "<<cost_t<<"s"<<endl;
     
-    int output_num = cluster.size();
-    if(output_num>10)output_num = 10;
+    //int output_num = cluster.size();
+    int output_num = (num_of_cluster < cluster.size()) ? num_of_cluster : cluster.size();
+    //if(output_num>10)output_num = 10;
     for(int irank=0;irank!=output_num;irank++)
     {
         int isite =cluster[irank].isite;
