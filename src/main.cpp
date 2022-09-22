@@ -996,9 +996,9 @@ int main(int argc, char** argv )
          vector<vector<vector<POSE> > >top_each_site_sub(P.num_threads,top_each_site);
         Thread_Distribution(thread_p,pockets.size(),P.num_threads);
         for(unsigned int i = 0; i != P.num_threads; ++i)
-        {             
+        {
             t[i] = std::thread(SF_low,std::ref(P), std::ref(thread_p[i]), std::ref(cmpl),std::ref(pockets),std::ref(F), std::ref(top_each_site_sub[i]));
-        }    
+        }
         for(unsigned int i = 0; i != P.num_threads; ++i)
         {
             t[i].join();
@@ -1006,10 +1006,13 @@ int main(int argc, char** argv )
             {
                 top_each_site[idx]=top_each_site_sub[i][idx];
             }
-        } 
+        }
 
         ofstream out_sfl_file(sfl_filename.c_str());
         out_sfl_file<<std::fixed<<setprecision(3);
+        ofstream out_sfl_mol2_file(P.output_prefix+"_SF_low.mol2");
+        out_sfl_mol2_file << std::fixed;
+
         double cost_t = time(NULL) - f1_t;
         size_t found = P.output_prefix.find_last_of("/\\");
         out_sfl_file<<"<JobName> "<<P.output_prefix.substr(found+1)<<" receptor_size "<<cmpl.rec_atom_num<<" lig_size "<<cmpl.lig_atom_num<<" "<<cost_t<<"s"<<endl;
@@ -1023,20 +1026,44 @@ int main(int argc, char** argv )
                     out_sfl_file<<"<site> "<<isite<<" "<<irank<<" /10 iconf "<<top_each_site[isite][irank].iconf<<" iatom "<<top_each_site[isite][irank].iatom<<" ipose "<<top_each_site[isite][irank].ipose<<" rmsd "<<top_each_site[isite][irank].rmsd<<endl;
                     out_sfl_file<<"<energy> "<<top_each_site[isite][irank].eng<<" lj "<<top_each_site[isite][irank].lj<<" ele "<<top_each_site[isite][irank].ele<<" pol "<<top_each_site[isite][irank].pol<<" self "<<top_each_site[isite][irank].self<<" sasa "<<top_each_site[isite][irank].sasa<<" hb "<<top_each_site[isite][irank].hb<<" internal_lj "<<top_each_site[isite][irank].internal_lj<<endl;
                     out_sfl_file<<"<pocket position> "<<pockets[isite].x<<" "<<pockets[isite].y<<" "<<pockets[isite].z<<endl;
+
                     for(int ilig=0;ilig!=cmpl.lig_atom_num;ilig++)
                     {
                         out_sfl_file<<right<<setw(4)<<ilig<<setw(5)<<cmpl.conformers[0].noH[ilig].name<<setw(3)<<cmpl.conformers[0].noH[ilig].element<<setw(8)<<top_each_site[isite][irank].position[ilig].x<<setw(8)<<top_each_site[isite][irank].position[ilig].y<<setw(8)<<top_each_site[isite][irank].position[ilig].z<<endl;
                     }
+
+                    out_sfl_mol2_file << "@<TRIPOS>MOLECULE" << endl;
+                    out_sfl_mol2_file << "<site> "<<isite<<" "<<irank<<" /10 iconf "<<top_each_site[isite][irank].iconf<<" iatom "<<top_each_site[isite][irank].iatom<<" ipose "<<top_each_site[isite][irank].ipose << endl;
+                    out_sfl_mol2_file << cmpl.lig_atom_num << " " << cmpl.lig_mol2.bonds.size() << " " << cmpl.lig_mol2.sub_num << " " << cmpl.lig_mol2.feat_num << " " << cmpl.lig_mol2.sets_num << endl;
+                    out_sfl_mol2_file << cmpl.lig_mol2.mol_type << endl;
+                    out_sfl_mol2_file << cmpl.lig_mol2.charge_type << endl;
+                    out_sfl_mol2_file << " " << endl;
+                    out_sfl_mol2_file << " " << endl;
+                    out_sfl_mol2_file << "@<TRIPOS>ATOM" << endl;
+
+                    for(int ia=0;ia!=cmpl.lig_mol2.atoms.size();ia++)
+                    {
+                        out_sfl_mol2_file<<left<<setw(4)<<ia+1<<setw(5)<<cmpl.lig_mol2.atoms[ia].name<<right<<setw(8)<<setprecision(3)<<top_each_site[isite][irank].position[ia].x
+                        <<setw(8)<<top_each_site[isite][irank].position[ia].y<<setw(8)<<top_each_site[isite][irank].position[ia].z<<setw(7)<<cmpl.lig_mol2.atoms[ia].type
+                        <<setw(4)<<cmpl.lig_mol2.atoms[ia].resi_index<<setw(6)<<cmpl.lig_mol2.atoms[ia].resi_name<<setw(8)<<cmpl.conformers[0].noH[ia].q<<endl;
+                    }
+                    out_sfl_mol2_file<<"@<TRIPOS>BOND"<<endl;
+                    for(int ib=0;ib!=cmpl.lig_mol2.bonds.size();ib++)
+                    {
+                        out_sfl_mol2_file<<left<<setw(5)<<cmpl.lig_mol2.bonds[ib].index<<setw(5)<<cmpl.lig_mol2.bonds[ib].left_id
+                        <<setw(5)<<cmpl.lig_mol2.bonds[ib].right_id<<setw(6)<<cmpl.lig_mol2.bonds[ib].atom_type<<endl;
+                    }
+                    out_sfl_mol2_file<<" "<<endl;
                 }
             }
         }
         out_sfl_file.close();
-         cout<<"_SF_low.dat Finish"<<endl;
-
+        out_sfl_mol2_file.close();
+        cout<<"_SF_low.dat Finish"<<endl;
     }
     else
     {
-         cout<<"_SF_low.dat exist"<<endl;
+        cout<<"_SF_low.dat exist"<<endl;
         int num_ligand_atom;
         string sline;
         while(getline(sfl_file,sline))
@@ -1053,7 +1080,6 @@ int main(int argc, char** argv )
             }
             if(sline.find("<site>")!=std::string::npos)
             {
-                
                 std::istringstream ss(sline);
                 std::string buf;
                 std::vector<std::string> token;
@@ -1102,11 +1128,11 @@ int main(int argc, char** argv )
     time_t f2_t=time(NULL);
     thread t_f2[P.num_threads];
     Thread_Distribution(thread_p,top_each_site.size(),P.num_threads);
-    
+
     for(unsigned int i = 0; i != P.num_threads; ++i)
-    {             
+    {
         t_f2[i] = std::thread(SF_high,std::ref(P), std::ref(thread_p[i]), std::ref(cmpl),std::ref(pockets),std::ref(F), std::ref(top_each_site));
-    }    
+    }
     for(unsigned int i = 0; i != P.num_threads; ++i)
     {
         t_f2[i].join();
@@ -1121,14 +1147,16 @@ int main(int argc, char** argv )
         }
     }
     sort(all_pose.begin(),all_pose.end(),less_eng_rerank);
-    
+
     string sfh_filename = P.output_prefix+"_SF_high.dat";
-    ofstream out_sfhfilename(sfh_filename.c_str());
-    out_sfhfilename<<std::fixed;
+    ofstream out_sfh_file(sfh_filename.c_str());
+    out_sfh_file<<std::fixed;
+    ofstream out_sfh_mol2_file(P.output_prefix+"_SF_high.mol2");
+    out_sfh_mol2_file << std::fixed;
     double cost_t = time(NULL) - f2_t;
     size_t found = P.output_prefix.find_last_of("/");
-    out_sfhfilename<<"<JobName> "<<P.output_prefix.substr(found+1)<<" receptor_size "<<cmpl.rec_atom_num<<" lig_size "<<cmpl.lig_atom_num<<" "<<cost_t<<"s"<<endl;
-    
+    out_sfh_file<<"<JobName> "<<P.output_prefix.substr(found+1)<<" receptor_size "<<cmpl.rec_atom_num<<" lig_size "<<cmpl.lig_atom_num<<" "<<cost_t<<"s"<<endl;
+
     for(int irank=0;irank!=all_pose.size();irank++)
     {
         if(all_pose[irank].eng<100000000)
@@ -1136,19 +1164,43 @@ int main(int argc, char** argv )
             int isite =all_pose[irank].isite;
             // outputfile<<right<<setw(4)<<isite<<setw(3)<<irank<<setw(3)<<top_each_site[isite][irank].iconf<<setw(3)<<top_each_site[isite][irank].iatom<<setw(6)<<top_each_site[isite][irank].ipose<<setw(6)<<setprecision(3)<<top_each_site[isite][irank].rmsd
             // <<setw(8)<<top_each_site[isite][irank].lj<<setw(8)<<top_each_site[isite][irank].ele<<setw(8)<<top_each_site[isite][irank].pol<<setw(8)<<top_each_site[isite][irank].self_lig<<setw(8)<<top_each_site[isite][irank].sasa<<setw(8)<<top_each_site[isite][irank].hb<<setw(8)<<top_each_site[isite][irank].self_rec
-            out_sfhfilename<<"<site> "<<all_pose[irank].isite<<" rank "<<irank<<" iconf "<<all_pose[irank].iconf<<" iatom "<<all_pose[irank].iatom<<" ipose "<<all_pose[irank].ipose<<" rmsd "<<all_pose[irank].rmsd<<endl;
-            out_sfhfilename<<"<energy> "<<all_pose[irank].eng_rerank<<" lj "<<all_pose[irank].lj<<" ele "<<all_pose[irank].ele<<" pol "<<all_pose[irank].pol<<" self_lig "<<all_pose[irank].self_lig<<" sasa "<<all_pose[irank].sasa<<" hb "<<all_pose[irank].hb<<" self_rec "<<all_pose[irank].self_rec<<" internal_lj "<<all_pose[irank].internal_lj<<endl;
-            out_sfhfilename<<"<pocket position> "<<pockets[isite].x<<" "<<pockets[isite].y<<" "<<pockets[isite].z<<endl;
+            out_sfh_file<<"<site> "<<all_pose[irank].isite<<" rank "<<irank<<" iconf "<<all_pose[irank].iconf<<" iatom "<<all_pose[irank].iatom<<" ipose "<<all_pose[irank].ipose<<" rmsd "<<all_pose[irank].rmsd<<endl;
+            out_sfh_file<<"<energy> "<<all_pose[irank].eng_rerank<<" lj "<<all_pose[irank].lj<<" ele "<<all_pose[irank].ele<<" pol "<<all_pose[irank].pol<<" self_lig "<<all_pose[irank].self_lig<<" sasa "<<all_pose[irank].sasa<<" hb "<<all_pose[irank].hb<<" self_rec "<<all_pose[irank].self_rec<<" internal_lj "<<all_pose[irank].internal_lj<<endl;
+            out_sfh_file<<"<pocket position> "<<pockets[isite].x<<" "<<pockets[isite].y<<" "<<pockets[isite].z<<endl;
             for(int ilig=0;ilig!=cmpl.lig_atom_num;ilig++)
             {
-                out_sfhfilename<<right<<setw(4)<<ilig<<setw(5)<<cmpl.conformers[0].noH[ilig].name<<setw(3)<<cmpl.conformers[0].noH[ilig].element<<setw(8)<<setprecision(3)<<all_pose[irank].position[ilig].x<<setw(8)<<all_pose[irank].position[ilig].y<<setw(8)<<all_pose[irank].position[ilig].z<<endl;
+                out_sfh_file<<right<<setw(4)<<ilig<<setw(5)<<cmpl.conformers[0].noH[ilig].name<<setw(3)<<cmpl.conformers[0].noH[ilig].element<<setw(8)<<setprecision(3)<<all_pose[irank].position[ilig].x<<setw(8)<<all_pose[irank].position[ilig].y<<setw(8)<<all_pose[irank].position[ilig].z<<endl;
             }
+
+            out_sfh_mol2_file << "@<TRIPOS>MOLECULE" << endl;
+            out_sfh_mol2_file << "<site> "<<all_pose[irank].isite<<" rank "<<irank<<" iconf "<<all_pose[irank].iconf<<" iatom "<<all_pose[irank].iatom<<" ipose "<<all_pose[irank].ipose << endl;
+            out_sfh_mol2_file << cmpl.lig_atom_num << " " << cmpl.lig_mol2.bonds.size() << " " << cmpl.lig_mol2.sub_num << " " << cmpl.lig_mol2.feat_num << " " << cmpl.lig_mol2.sets_num << endl;
+            out_sfh_mol2_file << cmpl.lig_mol2.mol_type << endl;
+            out_sfh_mol2_file << cmpl.lig_mol2.charge_type << endl;
+            out_sfh_mol2_file << " " << endl;
+            out_sfh_mol2_file << " " << endl;
+            out_sfh_mol2_file << "@<TRIPOS>ATOM" << endl;
+
+            for(int ia=0;ia!=cmpl.lig_mol2.atoms.size();ia++)
+            {
+                out_sfh_mol2_file<<left<<setw(4)<<ia+1<<setw(5)<<cmpl.lig_mol2.atoms[ia].name<<right<<setw(8)<<setprecision(3)<<all_pose[irank].position[ia].x
+                <<setw(8)<<all_pose[irank].position[ia].y<<setw(8)<<all_pose[irank].position[ia].z<<setw(7)<<cmpl.lig_mol2.atoms[ia].type
+                <<setw(4)<<cmpl.lig_mol2.atoms[ia].resi_index<<setw(6)<<cmpl.lig_mol2.atoms[ia].resi_name<<setw(8)<<cmpl.conformers[0].noH[ia].q<<endl;
+            }
+            out_sfh_mol2_file<<"@<TRIPOS>BOND"<<endl;
+            for(int ib=0;ib!=cmpl.lig_mol2.bonds.size();ib++)
+            {
+                out_sfh_mol2_file<<left<<setw(5)<<cmpl.lig_mol2.bonds[ib].index<<setw(5)<<cmpl.lig_mol2.bonds[ib].left_id
+                <<setw(5)<<cmpl.lig_mol2.bonds[ib].right_id<<setw(6)<<cmpl.lig_mol2.bonds[ib].atom_type<<endl;
+            }
+            out_sfh_mol2_file<<" "<<endl;
         }
     }
-    
-    out_sfhfilename.close();
+
+    out_sfh_file.close();
+    out_sfh_mol2_file.close();
     cout<<"_SF_high.dat Finish"<<endl;
-    
+
     ////////////////////
     /////clustering/////
     ////////////////////
@@ -1180,7 +1232,7 @@ int main(int argc, char** argv )
     out_clu_filename<<"# receptor_size: "<<cmpl.rec_atom_num<<endl;
     out_clu_filename<<"# lig_size: "<<cmpl.lig_atom_num<<endl;
     out_clu_filename<<"# Time: "<<cost_t<<"s"<<endl;
-    
+
     //int output_num = cluster.size();
     int output_num = (num_of_cluster < cluster.size()) ? num_of_cluster : cluster.size();
     //if(output_num>10)output_num = 10;
@@ -1199,7 +1251,7 @@ int main(int argc, char** argv )
         out_clu_filename<<"# Self_energy_of_receptor: "<<cluster[irank].self_rec<<endl;
         out_clu_filename<<"# Internal_LJ_of_ligand: "<<cluster[irank].internal_lj<<endl;
         out_clu_filename<<"# Pocket coordinate: "<<pockets[isite].x<<" "<<pockets[isite].y<<" "<<pockets[isite].z<<endl;
-           
+
         out_clu_filename<<"@<TRIPOS>MOLECULE"<<endl;
         out_clu_filename<<cmpl.lig_mol2.mol_name<<endl;
         out_clu_filename<<cmpl.lig_mol2.atoms.size()<<" "<<cmpl.lig_mol2.bonds.size()<<" "<<cmpl.lig_mol2.sub_num<<" "<<cmpl.lig_mol2.feat_num<<" "<<cmpl.lig_mol2.sets_num<<endl;
@@ -1218,12 +1270,12 @@ int main(int argc, char** argv )
         for(int ib=0;ib!=cmpl.lig_mol2.bonds.size();ib++)
         {
             out_clu_filename<<left<<setw(5)<<cmpl.lig_mol2.bonds[ib].index<<setw(5)<<cmpl.lig_mol2.bonds[ib].left_id
-            <<setw(5)<<cmpl.lig_mol2.bonds[ib].right_id<<setw(6)<<cmpl.lig_mol2.bonds[ib].atom_type<<endl;   
+            <<setw(5)<<cmpl.lig_mol2.bonds[ib].right_id<<setw(6)<<cmpl.lig_mol2.bonds[ib].atom_type<<endl; 
         }
         out_clu_filename<<" "<<endl;
 
     }
-    
+
     out_clu_filename.close();
     cout<<"_cluster.mol2 Finish"<<endl;
 }

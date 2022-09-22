@@ -52,11 +52,13 @@ Output files
 ----------------- 
 There will be 6 output files for each simulation. `.xyz` and `.mol2` are for visualization. :
 ```Bash
-XXX_pocket.dat  # Record the geometric score for potential binding sites.  
-XXX_pocket.xyz  # Potential binding sites are recorded in the format of .xyz for visualization.
-XXX_usepose.dat # Record the information of selected poses for scoring step.  
-XXX_SF_low.dat  # Record the scoring and ranking information by using the low resolution scoring function(SF-l).  
-XXX_SF_high.dat # Record the scoring and ranking information by using the high resolution scoring function(SF-h).
+XXX_pocket.dat   # Record the geometric score for potential binding sites.  
+XXX_pocket.xyz   # Potential binding sites are recorded in the format of .xyz for visualization.
+XXX_usepose.dat  # Record the information of selected poses for scoring step.  
+XXX_SF_low.dat   # Record the scoring and ranking information by using the low resolution scoring function(SF-l).  
+XXX_SF_high.dat  # Record the scoring and ranking information by using the high resolution scoring function(SF-h).
+XXX_SF_low.mol2  # Record the poses of XXX_SF_low.dat in mol2 format
+XXX_SF_high.mol2 # Record the poses of XXX_SF_high.dat in mol2 format
 XXX_cluster.mol2 # Top poses (default 10 poses) after clustering.
 ```
 
