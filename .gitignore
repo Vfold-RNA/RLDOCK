@@ -1,9 +1,2 @@
-Examples/**/*_SF_high.dat
-Examples/**/*_SF_high.mol2
-Examples/**/*_SF_low.dat
-Examples/**/*_SF_low.mol2
-Examples/**/*_cluster.mol2
-Examples/**/*_pocket.dat
-Examples/**/*_pocket.xyz
-Examples/**/*_usepose.dat
-*.log
+Examples-reference/
+bin/

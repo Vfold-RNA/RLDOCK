@@ -17,4 +17,5 @@ SRCS   := src/main.cpp  \
 		  src/RLDOCK_POCKET.cpp  \
 		  src/RLDOCK_POSE.cpp
 install:
-	$(CPLUS) $(CT11FLAG) $(INCLUDES) $(SRCS) -o $(TARGET)
+	mkdir -p bin
+	$(CPLUS) $(CT11FLAG) $(INCLUDES) $(SRCS) -o bin/$(TARGET)

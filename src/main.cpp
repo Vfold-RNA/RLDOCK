@@ -17,6 +17,12 @@ void Find_Pocket(const PARAMETER& P, const GRID& gd, const vector<ATOM>& rec_ato
         double xx = i*P.step_pocket+gd.x0;
         double yy = j*P.step_pocket+gd.y0;
         double zz = k*P.step_pocket+gd.z0;
+
+        // check dock box
+        if(P.box.flag == true && (xx < P.box.lower_x || xx > P.box.upper_x || yy < P.box.lower_y || yy > P.box.upper_y || zz < P.box.lower_z || zz > P.box.upper_z)) {
+            continue;
+        }
+
         int totalblock,blockrx=0,blocklx=0,blockry=0,blockly=0,blockrz=0,blocklz=0;
         if(gd.grids_pocket_flag[i][j][k]==0){
             for(auto&a:rec_atom){
@@ -628,9 +634,9 @@ int main(int argc, char** argv )
     string sphere_file = "";
     int num_of_cluster = 10;
     int num_threads = 4;
+    std::string box_str = "";
 
-
-    while((opt = getopt(argc, argv, "hi:l:r:o:s:n:c:")) != -1) {
+    while((opt = getopt(argc, argv, "hi:l:r:o:s:n:c:b:")) != -1) {
         switch(opt)
         {
             case 'h':
@@ -657,6 +663,9 @@ int main(int argc, char** argv )
             case 'r':
                 reference_file = string(optarg);
                 break;
+            case 'b':
+                box_str = string(optarg);
+                break;
         }
     }
     if(receptor_file.length() == 0){cout<<"Receptor mol2 file needed."<<endl;exit(3);}
@@ -672,13 +681,54 @@ int main(int argc, char** argv )
             cout<<"Job Name is set as default: "<<output_prefix<<endl;}
         else{cout<<"Job Name: "<<output_prefix<<endl;}
     }
+
     std::cout<<"*********start*******"<<endl;
-    
     PARAMETER P;
+
+    // check box str
+    if(box_str.length() == 0) {
+        std::cout << "No docking box specified. Using global docking settings." << std::endl;
+    } else {
+        P.box.flag = true;
+        std::vector<std::string> box_vec_str;
+        std::stringstream ss(box_str);
+        while (ss.good()) {
+            std::string substr;
+            getline(ss, substr, ',');
+            box_vec_str.push_back(substr);
+        }
+        if(box_vec_str.size() != 6) {
+            std::cout << "Value for option -b is not set correctly!" << std::endl;
+            std::cout << "box_center_x,box_center_y,box_center_z,box_size_x,box_size_y,box_size_z should only be separated by comma." << std::endl;
+            std::cout << "Current value: " << box_str << std::endl;
+            exit(2);
+        }
+        P.box.center_x = std::stod(box_vec_str[0]);
+        P.box.center_y = std::stod(box_vec_str[1]);
+        P.box.center_z = std::stod(box_vec_str[2]);
+        P.box.size_x = std::stod(box_vec_str[3]);
+        P.box.size_y = std::stod(box_vec_str[4]);
+        P.box.size_z = std::stod(box_vec_str[5]);
+        if(P.box.size_x <= 0 || P.box.size_y <= 0 || P.box.size_z <=0) {
+            std::cout << "Docking box size can not be negative!" << std::endl;
+            exit(2);
+        }
+        P.box.lower_x = P.box.center_x - P.box.size_x/2.0;
+        P.box.lower_y = P.box.center_y - P.box.size_y/2.0;
+        P.box.lower_z = P.box.center_z - P.box.size_z/2.0;
+        P.box.upper_x = P.box.center_x + P.box.size_x/2.0;
+        P.box.upper_y = P.box.center_y + P.box.size_y/2.0;
+        P.box.upper_z = P.box.center_z + P.box.size_z/2.0;
+        std::cout << "Docking box specified:" << std::endl;
+        std::cout << "Docking box center: (" << P.box.center_x << "," << P.box.center_y << "," << P.box.center_z << ") Å" << std::endl;
+        std::cout << "Docking box size: (" << P.box.size_x << "," << P.box.size_y << "," << P.box.size_z << ") Å" << std::endl;
+        std::cout << "Docking box lower (x,y,z): (" << P.box.lower_x << "," << P.box.lower_y << "," << P.box.lower_z << ") Å" << std::endl;
+        std::cout << "Docking box upper (x,y,z): (" << P.box.upper_x << "," << P.box.upper_y << "," << P.box.upper_z << ") Å" << std::endl;
+    }
     P.SetSphere(sphere_file.c_str());
     P.SetAngle();
     P.InputUpdate(receptor_file,ligand_file,reference_file,output_prefix,num_threads);
-    
+
     FORCEFIELD F;
     F.Initialization(P);
 
