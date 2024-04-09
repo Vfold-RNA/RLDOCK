@@ -139,7 +139,7 @@ void COMPLEX::Mol2_Info_Get(string lig_file_name)
     {
         if(this->conformers[i].noH.size()!=this->conformers[0].noH.size())
         {
-            cout<<"The number of heavy atoms of the "<<i+1<<"th conformer is different from that of first conformer."<<endl;        
+            cout<<"The number of heavy atoms of the "<<i+1<<"th conformer is different from that of first conformer."<<endl;
             cout<<"The "<<i+1<<"th conformer has "<<this->conformers[i].noH.size()<<" heavy atoms."<<endl;
             cout<<"The first conformer has "<<this->conformers[0].noH.size()<<" heavy atoms."<<endl;
             exit(3);
@@ -147,7 +147,7 @@ void COMPLEX::Mol2_Info_Get(string lig_file_name)
     }
     this->lig_atom_num = this->conformers[0].noH.size();
     this->rec_atom_num = this->rec[0].noH.size();
-    this->conformers_num = this->conformers.size(); 
+    this->conformers_num = this->conformers.size();
 
     ifstream infile(lig_file_name.c_str());
     string sline;
@@ -158,23 +158,35 @@ void COMPLEX::Mol2_Info_Get(string lig_file_name)
             if(this->lig_mol2.atom_num != 0)break;
             CASE tmp_mol;
             int num_atom,num_bond,num_sub,num_feat,num_sets;
-            infile>>this->lig_mol2.mol_name;
-            infile>>num_atom;
-            infile>>num_bond;
-            infile>>num_sub;
-            infile>>num_feat;
-            infile>>num_sets;
+
+            getline(infile,sline);
+            this->lig_mol2.mol_name = sline;
+
+            getline(infile,sline);
+            std::istringstream ss(sline);
+            std::string buf;
+            std::vector<std::string> token;
+            while(ss >> buf) token.push_back(buf);
+            if(token.size() != 5) {
+                std::cout << "unable to read mol2 file 3rd line! this line should contain 5 integers, please check the file format!" << std::endl;
+                exit(2);
+            }
+            num_atom = stoi(token[0]);
+            num_bond = stoi(token[1]);
+            num_sub = stoi(token[2]);
+            num_feat = stoi(token[3]);
+            num_sets = stoi(token[4]);
+
             getline(infile,sline);
             getline(infile,sline);
-            getline(infile,sline);
+            // getline(infile,sline);
             this->lig_mol2.charge_type=sline;
             std::map<int,int> idx_update;
-        
+
             while(getline(infile,sline))
             {
                 if(sline.find("@<TRIPOS>ATOM")!=std::string::npos)
                 {
-                    
                     for (int ia=0,iheavy=1;ia!=num_atom;ia++)
                     {
                         getline(infile,sline);
